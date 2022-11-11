@@ -5,7 +5,7 @@ variable "myregion" {
     default = "us-east-1"
     }
 variable "my_domain" {
-  value = "jcosioresume.com"
+  default = "jcosioresume.com"
 }
 provider "aws" {
     region = "us-east-1"

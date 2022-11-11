@@ -1,2 +1,3 @@
 CRCLambda/
 terraform.tfstate
+.terraform/
