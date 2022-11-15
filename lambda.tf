@@ -3,33 +3,65 @@ resource "aws_lambda_permission" "APIGW_lambda" {
     action = "lambda:InvokeFunction"
     function_name = aws_lambda_function.CRCLambda.function_name
     principal = "apigateway.amazonaws.com"
-    source_arn = "arn:aws:execute-api:${var.myregion}:${var.accountId}:${aws_api_gateway_method.CRCMethod.http_method}${aws_api_gateway_resource.CRCResource.path}"
+    source_arn = "arn:aws:execute-api:${var.myregion}:${var.accountId}:${aws_api_gateway_rest_api.CRCAPI.id}/*/${aws_api_gateway_method.CRCMethod.http_method}${aws_api_gateway_resource.CRCResource.path}"
 }
 
 resource "aws_lambda_function" "CRCLambda" {
     filename = "CRCLambda.zip"
     function_name = "CRCLambda"
     role = aws_iam_role.CRCLambdaRole.arn
-    handler = "lambda.lambda_handler"
-    runtime = "python3.8"
+    handler = "lambda_function.lambda_handler"
+    runtime = "python3.9"
     }
 
 resource "aws_iam_role" "CRCLambdaRole" {
     name = "CRCLambdaRole"
-
-    assume_role_policy = <<EOF
-    {
+    assume_role_policy = jsonencode({
         "Version": "2012-10-17",
-         "Statement": [
+        "Statement": [
             {
-            "Action": "sts:AssumeRole",
-            "Principal": {
-                "Service": "lambda.amazonaws.com"
+                "Action": "sts:AssumeRole",
+                "Principal": {
+                    "Service": "lambda.amazonaws.com"
                 },
-            "Effect": "Allow",
-            "Sid": ""
-        }   
-        ]
+                "Effect": "Allow",
+                "Sid": ""
+        }]
+    })
     }
-    EOF
+
+# resource "aws_iam_policy" "policy1" {
+#     name = "LambdaRole1"
+#     policy = jsonencode({
+#         "Version": "2012-10-17",
+#         "Statement": [
+#             {
+#                 "Action": "sts:AssumeRole",
+#                 "Principal": {
+#                     "Service": "lambda.amazonaws.com"
+#                 },
+#                 "Effect": "Allow",
+#                 "Sid": ""
+#         }]
+#     })
+# }
+
+resource "aws_iam_role_policy" "policy1" {
+    name = "LambdaRole1"
+    role = aws_iam_role.CRCLambdaRole.id
+    policy = jsonencode({
+        "Version": "2012-10-17",
+        "Statement": [{
+                "Effect": "Allow",
+                "Action": [
+                    "dynamodb:DeleteItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:PutItem",
+                    "dynamodb:Scan",
+                    "dynamodb:UpdateItem"
+                ],
+                "Resource": "${aws_dynamodb_table.CRCDBtable.arn}"
+            } 
+        ]
+    })
 }
