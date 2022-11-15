@@ -1,3 +1,2 @@
-CRCLambda/
-terraform.tfstate
-.terraform/c
+tfresources/.terraform/
+tfresources/terraform.tfstate
