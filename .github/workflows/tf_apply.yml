@@ -21,7 +21,7 @@ jobs:
     steps:
     
     - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@master
       with:
         role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN_SECRET }}
         role-session-name: github_actions_terraform_cred
