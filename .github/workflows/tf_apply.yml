@@ -9,6 +9,10 @@ defaults:
   run:
     shell: bash
 
+permissions:
+ id-token: write
+ contents: read
+
 jobs:
   terraform_apply:
     name: Deploy Backend
