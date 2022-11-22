@@ -54,3 +54,6 @@ jobs:
       working-directory: ./tfresources
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: terraform apply -auto-approve
+
+    - name: run cypress tests
+      uses: cypress-io/github-action@v4
